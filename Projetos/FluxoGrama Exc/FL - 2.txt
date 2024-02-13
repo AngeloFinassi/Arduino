@@ -1,0 +1,21 @@
+//Ângelo Martins Finassi, Arthur Gabriel
+
+//Fluxograma 2
+
+//Valor de X a ser inserido
+int x = 0;
+void setup()
+{
+  Serial.begin(9600);
+}
+
+void loop()
+{
+  if(x > 0){
+  	Serial.println("Proc. A");
+    if(x > 5){}
+    else{Serial.println("Proc. B");}
+  }
+  if(x < -5){}
+  else{Serial.println("Proc. C");}
+}

@@ -1,0 +1,115 @@
+// C++ code
+#include <SoftwareSerial.h>
+
+#define portaRX 10
+#define portaTX 11
+#define frequencia 9600
+
+SoftwareSerial mySerial(portaRX, portaTX);
+
+
+void setup()
+{
+  //Usando msm Frequência no arduino e no bluetooth
+  Serial.begin(frequencia);
+  mySerial.begin(frequencia);
+  //Definindo os estados das portas
+  pinMode(7, OUTPUT); //Motor A +
+  pinMode(6, OUTPUT); //Motor A -
+  pinMode(5, OUTPUT); //Motor B +
+  pinMode(4, OUTPUT); //Motor B -
+  pinMode(9, OUTPUT); //Motor A Velocidade
+  pinMode(3, OUTPUT); //Motor B Velocidade
+  
+}
+
+void loop()
+{
+  if(mySerial.available()){
+    int x; // x define o sentido anterior do carrinho (para virar para direita ou esquerda dependendo do sentido); frente x = 20; ré x = 30
+  	char data= mySerial.read(); // leitura das informções do bluetooth
+    
+    switch(data){
+      case 'F': //Frente
+      	analogWrite(9,255);
+      	analogWrite(3,255);
+      	digitalWrite (7, LOW);
+      	digitalWrite (6, HIGH);
+      	digitalWrite (5, LOW);
+      	digitalWrite (4, HIGH);
+        x = 20;
+      
+        break;
+      case 'S': //Parar
+      	analogWrite(9,255);
+      	analogWrite(3,255);
+      	digitalWrite (7, LOW);
+      	digitalWrite (6, LOW);
+      	digitalWrite (5, LOW);
+      	digitalWrite (4, LOW);
+
+      
+        break;
+      case 'B': //Ré
+      	analogWrite(9,125);
+      	analogWrite(3,125);   
+      	digitalWrite (7, HIGH);
+      	digitalWrite (6,LOW);
+      	digitalWrite (5, HIGH);
+      	digitalWrite (4, LOW);
+        x = 30;
+      
+        break;
+      case 'L': //Esquerda
+      switch(x){
+          case 20:
+      		analogWrite (3,125);
+        	analogWrite (9,125);
+        	digitalWrite (5, LOW);
+        	digitalWrite (4, HIGH);
+        	digitalWrite (7, LOW);
+        	digitalWrite (6, LOW);
+      		x = 20;
+            break;
+          case 30:
+        	analogWrite (3,125);
+          	analogWrite (9,125);
+          	digitalWrite (7, LOW);
+          	digitalWrite (6, LOW);
+          	digitalWrite (5, HIGH);
+         	digitalWrite (4, LOW);
+      		x = 30;
+            break;
+      }
+
+        break;
+      case 'R': //Direita
+      switch(x){
+          case 20:
+        	analogWrite (3,125);
+        	analogWrite (9,125);
+        	digitalWrite (5, LOW);
+        	digitalWrite (4, HIGH);
+        	digitalWrite (7, LOW);
+       		digitalWrite (6, LOW);
+      		x = 20;
+            break;
+          case 30:
+        	analogWrite (3,125);
+        	analogWrite (9,125);
+        	digitalWrite (5, LOW);
+        	digitalWrite (4, LOW);
+        	digitalWrite (7, HIGH);
+        	digitalWrite (6, LOW);
+      		x = 30;
+            break;
+       }
+
+      
+        break;
+    }
+    Serial.println('Valor recebido por bluetooth:', data);
+    Serial.println('Valor de X:', x);
+  }
+  delay(50); //Delay anti-interferencia
+}

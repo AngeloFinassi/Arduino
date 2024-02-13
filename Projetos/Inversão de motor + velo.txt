@@ -1,0 +1,30 @@
+// C++ code
+//
+void setup()
+{
+  Serial.begin(9600);
+  pinMode(A0, INPUT);
+  pinMode(7, INPUT);
+  pinMode(9, OUTPUT);
+  pinMode(11, OUTPUT); 
+
+}
+void loop()
+{
+  int x = analogRead(A0) / 4;
+  int y  = digitalRead(7);
+  Serial.println(y);
+  Serial.println(x);
+  
+  if(y == 1){
+   	digitalWrite(9, LOW);
+   	analogWrite(11, x);
+  }
+  else{
+   	analogWrite(9, x);
+   	digitalWrite(11, LOW);
+                    
+  }
+  
+  delay(100);
+}
