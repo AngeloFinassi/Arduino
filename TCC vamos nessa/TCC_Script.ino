@@ -4,10 +4,11 @@
 #define LDR_3 A2
 #define LDR_4 A3
 #define servo_painel 6
+#define servo2_painel 5
 
 //Variaveis
 int P_Spoint = 90; //Ângulo de inicial do servo_painel
-int velocidade = 255;
+
 
 float superior = 0;
 float inferior = 0;
@@ -16,6 +17,7 @@ float margem_superior = 1023 * 0.7;
 float margem_inferior = 1023 * 0.7;
   
 Servo servos_painel; //Associação da Biblioteca Servo para o servo_painel
+
 
 void setup()
 {
@@ -36,35 +38,34 @@ void setup()
 
 void loop()
 {
-  /*Looping While para verificação a diferença de
-  incidência luminosa nos LDRs, se não estiverem em seu valor
-  mínimo unido a tolerância, esse que é lido com 5 volts*/
-  
     //Chamando a Função para verificar as condições seguintes
     med_Var();
     
     //Limitador da Posição do Servo, 179º max e 1 min
+    if (P_Spoint > 179) P_Spoint = 179;
+    if (P_Spoint < 1) P_Spoint = 1;
 
     //Condições Painel
+  
+  	//Caso a diferença entre superior e inferior não sejam grandes
     if(superior >= margem_superior or inferior >= margem_inferior){
-      servos_painel.write(90);
       Serial.println("Parado");
     }
 
     else{
+      //Caso a parte superior tenha maior incidência solar
       if (superior > inferior){
-        //Continua horario
-        servos_painel.write(1);
+        P_Spoint = --P_Spoint;
         Serial.println("cima");
       }
     
-    
+      //Caso a parte inferior tenha maior incidência solar
       if (inferior > superior){ 
-        //Inverte o giro - anti horario
-        servos_painel.write(180);
+        P_Spoint = ++P_Spoint;
         Serial.println("baixo");
       }
     }
+  servos_painel.write(P_Spoint);
   delay(80);
 }
 
